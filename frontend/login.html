@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Авторизация</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; max-width: 400px; margin: 0 auto; }
+    input { display: block; width: 100%; padding: 8px; margin: 10px 0; }
+    button { padding: 10px 15px; background: #007bff; color: white; border: none; cursor: pointer; }
+    a { display: block; margin-top: 10px; }
+    .Ask{
+      display: flex;
+      flex-direction: row;
+      align-items: end;
+    }
+  </style>
+</head>
+<body>
+  <h1>Авторизация</h1>
+  <input type="text" id="username" placeholder="Username" required>
+  <input type="password" id="password" placeholder="Password" required>
+  <button onclick="login()">Авторизация</button>
+  <div class="Ask">
+    <div style="margin-right: 10px;">Нет аккаунта?</div>
+    <a href="login.html">Регистрация</a>
+  </div>
+
+  <script>
+    async function login() {
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+  
+  try {
+    const response = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Авторизация не получилась');
+    }
+
+    const data = await response.json();
+    localStorage.setItem('token', data.token);
+    window.location.href = 'index.html';
+  } catch (error) {
+    alert(error.message);
+  }
+}
+  </script>
+</body>
+</html>
